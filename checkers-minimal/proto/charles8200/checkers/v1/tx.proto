@@ -1,0 +1,49 @@
+// Protocol buffer definition for the Checkers game transaction service
+// This file defines the messages and services required for game creation transactions
+syntax = "proto3";
+package charles8200.checkers.v1;
+
+// Specifies the Go package path for the generated code
+option go_package = "github.com/charles8200/checkers";
+
+// Required imports for Cosmos SDK integration and protocol buffer extensions
+import "cosmos/msg/v1/msg.proto";
+import "gogoproto/gogo.proto";
+import "charles8200/checkers/v1/types.proto";
+import "cosmos_proto/cosmos.proto";
+
+// CheckersTorram service defines the gRPC endpoints for game-related transactions
+// This service handles all game creation operations in the blockchain
+service CheckersTorram {  
+    // Indicates that this service implements Cosmos SDK message interface
+    option (cosmos.msg.v1.service) = true;  
+
+    // CheckersCreateGm handles game creation requests
+    // Creates a new game with specified players and returns the result
+    rpc CheckersCreateGm(ReqCheckersTorram) returns (ResCheckersTorram);  
+}  
+
+// ReqCheckersTorram defines the request structure for creating a new game
+// Contains all necessary information to initialize a game between two players
+message ReqCheckersTorram {  
+    // Specifies that the creator field must be signed by the transaction signer
+    option (cosmos.msg.v1.signer) = "creator";  
+
+    // Address of the account creating the game
+    string creator = 1;  
+    
+    // Unique identifier for the game instance
+    string index = 2;  
+    
+    // Address of the player using black pieces
+    // Uses Cosmos SDK address string format
+    string black = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];  
+    
+    // Address of the player using red pieces
+    // Uses Cosmos SDK address string format
+    string red = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];  
+}  
+
+// ResCheckersTorram defines the response structure for game creation
+// Empty response indicates successful game creation
+message ResCheckersTorram {} 
